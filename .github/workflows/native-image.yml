@@ -55,7 +55,7 @@ jobs:
 
       - name: Generate native image
         run: |
-          native-image -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -H:Path="build/libs" -H:Name="plantuml-${{ matrix.platform }}-${{ inputs.release-version }}"
+          native-image -H:IncludeResources=".*/.*.(txt|png)$" -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -H:Path="build/libs" -H:Name="plantuml-${{ matrix.platform }}-${{ inputs.release-version }}"
 
       - name: Cache native image
         uses: actions/cache/save@v3

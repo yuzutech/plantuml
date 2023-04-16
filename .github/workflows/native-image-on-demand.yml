@@ -1,0 +1,161 @@
+name: Native Images On-Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build_artifacts:
+    outputs:
+      release_version: ${{ steps.version.outputs.release_version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set release version
+        id: version
+        env:
+          REF: ${{ github.event.inputs.tag }}
+        run: |
+          echo "release_version=${REF#v}" >> $GITHUB_ENV
+          echo "release_version=${REF#v}" >> $GITHUB_OUTPUT
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          ref: "refs/tags/${{ github.event.inputs.tag }}"
+
+      - name: Set up java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+
+      - name: Set version from tag
+        env:
+          RELEASE_VERSION: ${{ env.release_version }}
+        run: sed -i "s/version = .*/version = $RELEASE_VERSION/" gradle.properties
+
+      - name: Build artifacts
+        run: |
+          gradle -q clean build \
+            pdfJar \
+            -x test
+
+      - name: Cache libs
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            build/libs
+            build/publications
+            plantuml-mit/build/libs
+          key: "libs-${{ github.run_id }}"
+          enableCrossOsArchive: true
+
+  native_images:
+    needs: build_artifacts
+    uses: ./.github/workflows/native-image.yml
+    with:
+      release-version: ${{ needs.build_artifacts.outputs.release_version }}
+
+  native_arm_image:
+    needs: build_artifacts
+    runs-on: [ self-hosted, ARM64 ]
+    steps:
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.1'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            build/libs
+            build/publications
+            plantuml-mit/build/libs
+          key: "libs-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Generate GraalVM configuration
+        run: |
+          mkdir -p native-image-config-dir
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe > out.png
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe > out.pdf
+        env:
+          RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
+
+      - name: Generate native image
+        run: |
+          native-image -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -H:Path="build/libs" -H:Name="plantuml-linux-arm64-$RELEASE_VERSION"
+        env:
+          RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
+
+      - name: Cache native image
+        uses: actions/cache/save@v3
+        with:
+          path: "build/libs/plantuml-linux-arm64-*"
+          key: "native-image-linux-arm64-${{ github.run_id }}"
+          enableCrossOsArchive: true
+
+  upload:
+    needs: [ native_images, native_arm_image ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Libs cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            build/libs
+            build/publications
+            plantuml-mit/build/libs
+          key: "libs-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Restore Native-image-darwin-amd64 cache
+        uses: actions/cache/restore@v3
+        with:
+          path: "build/libs/plantuml-darwin-amd64-*"
+          key: "native-image-darwin-amd64-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Restore Native-image-win-amd64 cache
+        uses: actions/cache/restore@v3
+        with:
+          path: "build/libs/plantuml-win-amd64-*"
+          key: "native-image-win-amd64-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Restore Native-image-linux-amd64 cache
+        uses: actions/cache/restore@v3
+        with:
+          path: "build/libs/plantuml-linux-amd64-*"
+          key: "native-image-linux-amd64-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Restore Native-image-linux-arm64 cache
+        uses: actions/cache/restore@v3
+        with:
+          path: "build/libs/plantuml-linux-arm64-*"
+          key: "native-image-linux-arm64-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          # Using github.run_number here to reduce confusion when downloading & comparing artifacts from several builds
+          name: ${{ github.run_number }}-artifacts
+          path: |
+            build/libs/*
+            build/publications/maven/*

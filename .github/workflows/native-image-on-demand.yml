@@ -88,6 +88,7 @@ jobs:
           mkdir -p native-image-config-dir
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe > out.png
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe > out.pdf
+          echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 

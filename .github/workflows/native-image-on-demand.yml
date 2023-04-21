@@ -112,7 +112,7 @@ jobs:
           enableCrossOsArchive: true
 
   upload:
-    needs: [ native_images, native_arm_image ]
+    needs: [ build_artifacts, native_images, native_arm_image ]
     runs-on: ubuntu-latest
     steps:
       - name: Restore Libs cache
@@ -160,7 +160,7 @@ jobs:
 
       - name: Create release
         run: |
-          gh release upload $RELEASE_VERSION './build/libs/*'
+          gh release upload $RELEASE_VERSION './build/libs/plantuml-darwin-*' './build/libs/plantuml-linux-*' './build/libs/plantuml-win-*'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}

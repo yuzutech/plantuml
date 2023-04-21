@@ -160,6 +160,9 @@ jobs:
           fail-on-cache-miss: true
           enableCrossOsArchive: true
 
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
       - name: Create release
         run: |
           gh release create $RELEASE_VERSION ./build/libs/plantuml-darwin-* ./build/libs/plantuml-linux-* ./build/libs/plantuml-win-*

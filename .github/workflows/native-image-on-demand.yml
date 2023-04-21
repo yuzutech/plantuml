@@ -96,7 +96,7 @@ jobs:
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe > out.png
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe > out.pdf
           echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
-          echo "!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")" | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
+          printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, "A Business Object")' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 

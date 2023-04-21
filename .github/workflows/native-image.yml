@@ -52,6 +52,7 @@ jobs:
           mkdir native-image-config-dir
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpng -pipe > out.png
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpdf -pipe > out.pdf
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe -theme minty > out.svg
           echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe > out.svg || true
           printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe > out.svg
 

@@ -1,5 +1,7 @@
 name: Native Images On-Demand
 
+run-name: Native Images ${{ inputs.tag }} by @${{ github.actor }}
+
 on:
   workflow_dispatch:
     inputs:

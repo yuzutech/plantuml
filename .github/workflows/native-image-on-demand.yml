@@ -117,6 +117,9 @@ jobs:
     needs: [ build_artifacts, native_images, native_arm_image ]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
       - name: Restore Libs cache
         uses: actions/cache/restore@v3
         with:
@@ -159,9 +162,6 @@ jobs:
           key: "native-image-linux-arm64-${{ github.run_id }}"
           fail-on-cache-miss: true
           enableCrossOsArchive: true
-
-      - name: Checkout the repository
-        uses: actions/checkout@v3
 
       - name: Create release
         run: |

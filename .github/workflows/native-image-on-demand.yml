@@ -160,7 +160,7 @@ jobs:
 
       - name: Create release
         run: |
-          gh release upload $RELEASE_VERSION './build/libs/plantuml-darwin-*' './build/libs/plantuml-linux-*' './build/libs/plantuml-win-*'
+          gh release create $RELEASE_VERSION ./build/libs/plantuml-darwin-* ./build/libs/plantuml-linux-* ./build/libs/plantuml-win-*
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}

@@ -73,6 +73,11 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - run: |
+          rm -rf ./build/libs
+          rm -rf ./build/publications
+          rm -rf ./plantuml-mit/build/libs
+
       - uses: actions/cache/restore@v3
         with:
           path: |
@@ -89,6 +94,7 @@ jobs:
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe > out.png
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe > out.pdf
           echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
+          echo "!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")" | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 
@@ -152,11 +158,9 @@ jobs:
           fail-on-cache-miss: true
           enableCrossOsArchive: true
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          # Using github.run_number here to reduce confusion when downloading & comparing artifacts from several builds
-          name: ${{ github.run_number }}-artifacts
-          path: |
-            build/libs/*
-            build/publications/maven/*
+      - name: Create release
+        run: |
+          gh release upload $RELEASE_VERSION './build/libs/*'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}

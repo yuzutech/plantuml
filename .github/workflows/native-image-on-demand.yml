@@ -93,17 +93,19 @@ jobs:
       - name: Generate GraalVM configuration
         run: |
           mkdir -p native-image-config-dir
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe > out.png
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe > out.pdf
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe -theme minty > out.svg
-          echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg || true
-          printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe > out.svg
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpng -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tpdf -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe -theme minty
+          echo 'help themes' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe
+          echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe || true
+          printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -tsvg -pipe
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 
       - name: Generate native image
         run: |
-          native-image -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -H:Path="build/libs" -H:Name="plantuml-linux-arm64-$RELEASE_VERSION"
+          echo '{"resources":{"includes":[{"pattern": ".*\\.js$"}, {"pattern": ".*\\.css$"}, {"pattern": ".*\\.repx$"}, {"pattern": ".*\\.puml$"}, {"pattern": ".*\\.skin$"}, {"pattern": ".*\\.txt$"}, {"pattern": ".*\\.png$"}]}}' > resource-config.json
+          native-image -H:ResourceConfigurationFiles=resource-config.json -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -H:Path="build/libs" -H:Name="plantuml-linux-arm64-$RELEASE_VERSION"
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 

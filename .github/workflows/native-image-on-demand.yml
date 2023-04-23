@@ -168,6 +168,7 @@ jobs:
 
       - name: Create release
         run: |
+          gh release view "v$RELEASE_VERSION" || gh release create "v$RELEASE_VERSION"
           gh release upload "v$RELEASE_VERSION" ./build/libs/plantuml-darwin-* ./build/libs/plantuml-linux-* ./build/libs/plantuml-win-* --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

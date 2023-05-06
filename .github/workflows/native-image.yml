@@ -27,7 +27,7 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.1'
+          version: '22.3.2'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -51,13 +51,13 @@ jobs:
         run: |
           mkdir native-image-config-dir
           echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpng -pipe
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpdf -pipe
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -ttxt -pipe
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tuxt -pipe
-          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe -theme minty
-          echo 'help themes' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe
-          echo 'error' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe > out.svg || true
-          printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")' | java -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpdf -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -ttxt -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tuxt -pipe
+          echo 'Bob->Alice: Hello' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe -theme minty
+          echo 'help themes' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe
+          echo 'error' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe > out.svg || true
+          printf '!include <archimate/Archimate>\n\ntitle Archimate Sample - Internet Browser\n\nBusiness_Object(businessObject, \"A Business Object\")' | java -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tsvg -pipe
 
       - name: Generate native image
         run: |

@@ -32,6 +32,18 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install graphviz on Ubuntu
+        run: sudo apt-get install -y graphviz
+        if: matrix.platform == 'linux-amd64'
+
+      - name: Install graphviz on macOS
+        run: brew install graphviz
+        if: matrix.platform == 'darwin-amd64'
+
+      - name: Install graphviz on Windows
+        run: choco install graphviz
+        if:  matrix.platform == 'win-amd64'
+
       - uses: actions/cache/restore@v3
         with:
           path: |

@@ -60,6 +60,7 @@ jobs:
           enableCrossOsArchive: true
 
       - name: Generate GraalVM configuration
+        shell: bash
         run: |
           mkdir native-image-config-dir
           echo 'Bob->Alice: Hello' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpng -pipe

@@ -54,6 +54,10 @@ jobs:
           path: |
             build/libs
             build/publications
+            plantuml-asl/build/libs
+            plantuml-bsd/build/libs
+            plantuml-epl/build/libs
+            plantuml-lgpl/build/libs
             plantuml-mit/build/libs
           key: "libs-${{ github.run_id }}"
           enableCrossOsArchive: true
@@ -78,6 +82,10 @@ jobs:
       - run: |
           rm -rf ./build/libs
           rm -rf ./build/publications
+          rm -rf ./plantuml-asl/build/libs
+          rm -rf ./plantuml-bsd/build/libs
+          rm -rf ./plantuml-epl/build/libs
+          rm -rf ./plantuml-lgpl/build/libs
           rm -rf ./plantuml-mit/build/libs
 
       - uses: actions/cache/restore@v3
@@ -85,6 +93,10 @@ jobs:
           path: |
             build/libs
             build/publications
+            plantuml-asl/build/libs
+            plantuml-bsd/build/libs
+            plantuml-epl/build/libs
+            plantuml-lgpl/build/libs
             plantuml-mit/build/libs
           key: "libs-${{ github.run_id }}"
           fail-on-cache-miss: true
@@ -135,6 +147,10 @@ jobs:
           path: |
             build/libs
             build/publications
+            plantuml-asl/build/libs
+            plantuml-bsd/build/libs
+            plantuml-epl/build/libs
+            plantuml-lgpl/build/libs
             plantuml-mit/build/libs
           key: "libs-${{ github.run_id }}"
           fail-on-cache-miss: true

@@ -64,6 +64,7 @@ jobs:
         run: |
           mkdir native-image-config-dir
           echo 'Bob->Alice: Hello' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-output-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpng -pipe
+          printf 'Bob->Alice: Hello\nBob<--Alice\n...\nBob->Alice: Hello again\nBob<--Alice' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpng -pipe
           echo 'Bob->Alice: Hello' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tpdf -pipe
           echo 'Bob->Alice: Hello' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -ttxt -pipe
           echo 'Bob->Alice: Hello' | java -Djava.awt.headless=true -agentlib:native-image-agent=config-merge-dir=native-image-config-dir -jar "./build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -tuxt -pipe

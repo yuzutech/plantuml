@@ -88,6 +88,7 @@ jobs:
           rm -rf ./plantuml-epl/build/libs
           rm -rf ./plantuml-lgpl/build/libs
           rm -rf ./plantuml-mit/build/libs
+          rm -rf ./plantuml-gplv2/build/libs
 
       - uses: actions/cache/restore@v3
         with:
@@ -99,6 +100,7 @@ jobs:
             plantuml-epl/build/libs
             plantuml-lgpl/build/libs
             plantuml-mit/build/libs
+            plantuml-gplv2/build/libs
           key: "libs-${{ github.run_id }}"
           fail-on-cache-miss: true
           enableCrossOsArchive: true
@@ -155,6 +157,7 @@ jobs:
             plantuml-epl/build/libs
             plantuml-lgpl/build/libs
             plantuml-mit/build/libs
+            plantuml-gplv2/build/libs
           key: "libs-${{ github.run_id }}"
           fail-on-cache-miss: true
           enableCrossOsArchive: true

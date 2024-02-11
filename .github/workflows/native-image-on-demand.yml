@@ -128,7 +128,7 @@ jobs:
       - name: Generate native image
         run: |
           echo '{"resources":{"includes":[{"pattern": ".*\\.js$"}, {"pattern": ".*\\.css$"}, {"pattern": ".*\\.repx$"}, {"pattern": ".*\\.puml$"}, {"pattern": ".*\\.skin$"}, {"pattern": ".*\\.txt$"}, {"pattern": ".*\\.png$"}, {"pattern": ".*\\.svg$"}]}}' > resource-config.json
-          native-image -H:ResourceConfigurationFiles=resource-config.json -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --enable-https --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -H:Path="build/libs" -H:Name="plantuml-linux-arm64-$RELEASE_VERSION"
+          native-image -H:+IncludeAllLocales -H:ResourceConfigurationFiles=resource-config.json -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --enable-https --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-$RELEASE_VERSION.jar" -H:Path="build/libs" -H:Name="plantuml-linux-arm64-$RELEASE_VERSION"
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 

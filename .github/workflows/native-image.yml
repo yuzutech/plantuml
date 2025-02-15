@@ -27,9 +27,8 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          distribution: 'graalvm'
+          distribution: 'liberica'
           java-version: '21'
-          components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install graphviz on Ubuntu

@@ -33,7 +33,7 @@ jobs:
       - name: Set up java
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
           cache: gradle
 
@@ -76,7 +76,7 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: '17'
+          java-version: '21'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

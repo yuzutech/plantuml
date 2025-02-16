@@ -71,7 +71,7 @@ jobs:
 
   native_arm_image:
     needs: build_artifacts
-    runs-on: [ self-hosted, ARM64 ]
+    runs-on: ubuntu-22.04-arm
     steps:
       - uses: graalvm/setup-graalvm@v1
         with:

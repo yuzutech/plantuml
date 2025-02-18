@@ -124,12 +124,21 @@ jobs:
           fail-on-cache-miss: true
           enableCrossOsArchive: true
 
+      - name: Restore Native-image-darwin-arm64 cache
+        uses: actions/cache/restore@v3
+        with:
+          path: "build/libs/plantuml-darwin-arm64/*"
+          key: "native-image-darwin-arm64-${{ github.run_id }}"
+          fail-on-cache-miss: true
+          enableCrossOsArchive: true
+
       - name: Zip files
         run: |
           zip -r -j "plantuml-linux-arm64-$RELEASE_VERSION.zip" build/libs/plantuml-linux-arm64/*
           zip -r -j "plantuml-linux-amd64-$RELEASE_VERSION.zip" build/libs/plantuml-linux-amd64/*
           zip -r -j "plantuml-win-amd64-$RELEASE_VERSION.zip" build/libs/plantuml-win-amd64/*
           zip -r -j "plantuml-darwin-amd64-$RELEASE_VERSION.zip" build/libs/plantuml-darwin-amd64/*
+          zip -r -j "plantuml-darwin-arm64-$RELEASE_VERSION.zip" build/libs/plantuml-darwin-arm64/*
         env:
           RELEASE_VERSION: ${{ needs.build_artifacts.outputs.release_version }}
 

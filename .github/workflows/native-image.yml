@@ -16,8 +16,6 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
-          - os: 'macos-latest-large'
-            platform: 'darwin-amd64'
           - os: 'macos-14'
             platform: 'darwin-arm64'
           - os: 'windows-latest'
@@ -41,7 +39,7 @@ jobs:
 
       - name: Install graphviz on macOS
         run: brew install graphviz
-        if: matrix.platform == 'darwin-amd64'
+        if: matrix.platform == 'darwin-arm64'
 
       - name: Install graphviz on Windows
         run: choco install graphviz

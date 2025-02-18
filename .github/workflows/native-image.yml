@@ -18,6 +18,8 @@ jobs:
             platform: 'linux-amd64'
           - os: 'macos-latest'
             platform: 'darwin-amd64'
+          - os: 'macos-14-arm64'
+            platform: 'darwin-arm64'
           - os: 'windows-latest'
             platform: 'win-amd64'
           - os: 'ubuntu-22.04-arm'

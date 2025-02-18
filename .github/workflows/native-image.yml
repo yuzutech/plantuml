@@ -20,6 +20,8 @@ jobs:
             platform: 'darwin-amd64'
           - os: 'windows-latest'
             platform: 'win-amd64'
+          - os: 'ubuntu-22.04-arm'
+            platform: 'linux-arm64'
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout the repository
@@ -33,7 +35,7 @@ jobs:
 
       - name: Install graphviz on Ubuntu
         run: sudo apt-get install -y graphviz
-        if: matrix.platform == 'linux-amd64'
+        if: matrix.platform == 'linux-amd64' || matrix.platform == 'linux-arm64'
 
       - name: Install graphviz on macOS
         run: brew install graphviz
@@ -80,11 +82,12 @@ jobs:
       - name: Generate native image
         run: |
           echo '{"resources":{"includes":[{"pattern": ".*\\.js$"}, {"pattern": ".*\\.css$"}, {"pattern": ".*\\.repx$"}, {"pattern": ".*\\.puml$"}, {"pattern": ".*\\.skin$"}, {"pattern": ".*\\.txt$"}, {"pattern": ".*\\.png$"}, {"pattern": ".*\\.svg$"}]}}' > resource-config.json
-          native-image -H:+StaticExecutableWithDynamicLibC -H:+IncludeAllLocales -H:ResourceConfigurationFiles=resource-config.json -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --enable-https --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -o "build/libs/plantuml-${{ matrix.platform }}-${{ inputs.release-version }}"
+          mkdir "build/libs/plantuml-${{ matrix.platform }}"
+          native-image -H:+StaticExecutableWithDynamicLibC -H:+IncludeAllLocales -H:ResourceConfigurationFiles=resource-config.json -H:ConfigurationFileDirectories=native-image-config-dir --no-fallback --enable-https --report-unsupported-elements-at-runtime -jar "build/libs/plantuml-pdf-${{ inputs.release-version }}.jar" -o "build/libs/plantuml-${{ matrix.platform }}/plantuml-${{ matrix.platform }}-${{ inputs.release-version }}"
 
       - name: Cache native image
         uses: actions/cache/save@v3
         with:
-          path: "build/libs/plantuml-${{ matrix.platform }}-*"
+          path: "build/libs/plantuml-${{ matrix.platform }}/*"
           key: "native-image-${{ matrix.platform }}-${{ github.run_id }}"
           enableCrossOsArchive: true

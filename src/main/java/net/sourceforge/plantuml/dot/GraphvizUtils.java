@@ -50,7 +50,6 @@ public class GraphvizUtils {
 
 	private static int DOT_VERSION_LIMIT = 226;
 
-
 	private static final ThreadLocal<Integer> limitSize = new ThreadLocal<>();
 
 	public static void removeLocalLimitSize() {
@@ -80,7 +79,6 @@ public class GraphvizUtils {
 	public static String getenvLogData() {
 		return SecurityUtils.getenv("PLANTUML_LOGDATA");
 	}
-
 
 	static public int addDotStatus(ReportLog result, boolean withRichText) {
 		String red = "";
@@ -124,7 +122,10 @@ public class GraphvizUtils {
 		if (exeState == ExeState.OK) {
 			try {
 				final String version = GraphvizRuntimeEnvironment.getInstance().dotVersion();
-				result.add("Dot version: " + version);
+				if (withRichText)
+					result.add("Dot version: \"\"" + version + "\"\"");
+				else
+					result.add("Dot version: " + version);
 				final int v = GraphvizRuntimeEnvironment.getInstance().getDotVersion();
 				if (v == -1) {
 					result.add("Warning : cannot determine dot version");
@@ -157,7 +158,8 @@ public class GraphvizUtils {
 	}
 
 	static String getTestCreateSimpleFile() throws IOException {
-		final Graphviz graphviz2 = GraphvizRuntimeEnvironment.getInstance().create(null, "digraph foo { test; }", "svg");
+		final Graphviz graphviz2 = GraphvizRuntimeEnvironment.getInstance().create(null, "digraph foo { test; }",
+				"svg");
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final ProcessState state = graphviz2.createFile3(baos);
 		if (state.differs(ProcessState.TERMINATED_OK()))

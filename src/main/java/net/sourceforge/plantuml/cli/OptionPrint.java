@@ -50,59 +50,17 @@ import net.sourceforge.plantuml.dot.GraphvizUtils;
 import net.sourceforge.plantuml.security.SecurityProfile;
 import net.sourceforge.plantuml.security.SecurityUtils;
 import net.sourceforge.plantuml.syntax.LanguageDescriptor;
+import net.sourceforge.plantuml.version.CompilationInfo;
 import net.sourceforge.plantuml.version.License;
 import net.sourceforge.plantuml.version.PSystemVersion;
 import net.sourceforge.plantuml.version.Version;
 
 public class OptionPrint {
-	// ::remove file when __CORE__ or __TEAVM__
-	// ::remove file when __HAXE__
-
-	static public void printCheckGraphviz() {
-		final ReportLog result = new ReportLog();
-		final int errorCode = GraphvizUtils.addDotStatus(result, false);
-		for (String s : result)
-			if (errorCode == 0)
-				System.out.println(s);
-			else
-				System.err.println(s);
-
-		Exit.exit(errorCode);
-	}
-
-
-	public static void printLicense() {
-		for (String s : License.getCurrent().getTextFull())
-			System.out.println(s);
-	}
-
-	public static void printVersion() {
-		System.out.println(Version.fullDescription());
-		System.out.println("(" + License.getCurrent() + " source distribution)");
-		for (String v : interestingProperties())
-			System.out.println(v);
-
-		for (String v : interestingValues())
-			System.out.println(v);
-
-		System.out.println();
-		final ReportLog result = new ReportLog();
-		final int errorCode = GraphvizUtils.addDotStatus(result, false);
-		for (String s : result)
-			System.out.println(s);
-
-		Exit.exit(errorCode);
-	}
 
 	public static Collection<String> interestingProperties() {
+		// ::revert when __TEAVM__
+		// return Collections.emptyList();
 		final Properties p = System.getProperties();
-//		final List<String> list1 = Arrays.asList("java.runtime.name", "Java Runtime", "java.vm.name", "JVM",
-//				"java.runtime.version", "Java Version", "os.name", "Operating System", "file.encoding",
-//				"Default Encoding", "user.language", "Language", "user.country", "Country");
-//		final List<String> list2 = Arrays.asList("java.runtime.name", "Java Runtime", "java.vm.name", "JVM",
-//				"java.runtime.version", "Java Version", "os.name", "Operating System", /* "os.version", "OS Version", */
-//				"file.encoding", "Default Encoding", "user.language", "Language", "user.country", "Country");
-//		final List<String> all = withIp() ? list1 : list2;
 		final List<String> all;
 		if (SecurityUtils.getSecurityProfile() == SecurityProfile.UNSECURE) {
 			all = Arrays.asList("java.runtime.name", "Java Runtime", "java.vm.name", "JVM", "java.runtime.version",
@@ -113,20 +71,16 @@ public class OptionPrint {
 					"Default Encoding", "user.language", "Language", "user.country", "Country");
 		}
 		final List<String> result = new ArrayList<>();
-		for (int i = 0; i < all.size(); i += 2) {
+		for (int i = 0; i < all.size(); i += 2)
 			result.add(all.get(i + 1) + ": " + p.getProperty(all.get(i)));
-		}
+
 		return result;
+		// ::done
 	}
 
 	public static Collection<String> interestingValues() {
 		final List<String> strings = new ArrayList<>();
-//		if (withIp() == false) {
-//			strings.add("Machine: " + getHostName());
-//		}
-//		strings.add(" ");
-//		strings.add("Current Security Profile: " + SecurityUtils.getSecurityProfile());
-//		strings.add(SecurityUtils.getSecurityProfile().longDescription());
+		// ::comment when __CORE__ or __TEAVM__
 		strings.add(" ");
 		strings.add("PLANTUML_LIMIT_SIZE: " + GraphvizUtils.getenvImageLimit());
 		if (SecurityUtils.getSecurityProfile() == SecurityProfile.UNSECURE) {
@@ -142,19 +96,60 @@ public class OptionPrint {
 			strings.add("Used Memory: " + format(usedMemory));
 			strings.add("Thread Active Count: " + threadActiveCount);
 		}
+		// ::done
 		return Collections.unmodifiableCollection(strings);
 	}
 
-//	private static boolean withIp() {
-//		return getHostName().startsWith("ip-");
-//	}
+	// ::comment when __CORE__ or __TEAVM__
+
+	static public void printCheckGraphviz() {
+		final ReportLog result = new ReportLog();
+		final int errorCode = GraphvizUtils.addDotStatus(result, false);
+		for (String s : result)
+			if (errorCode == 0)
+				System.out.println(s);
+			else
+				System.err.println(s);
+
+		Exit.exit(errorCode);
+	}
+
+	public static void printLicense() {
+		for (String s : License.getCurrent().getTextFull())
+			System.out.println(s);
+	}
+
+	public static void printVersion() {
+		System.out.println(Version.fullDescription());
+		System.out.println("(" + License.getCurrent() + " source distribution)");
+		System.out.println();
+		System.out.println("Build Version: " + CompilationInfo.VERSION);
+		System.out.println("Git Commit: " + CompilationInfo.COMMIT);
+		if (CompilationInfo.COMPILE_TIMESTAMP != 0)
+			System.out.println("Compile Time: " + Version.compileTimeString());
+
+		System.out.println();
+		for (String v : interestingProperties())
+			System.out.println(v);
+
+		for (String v : interestingValues())
+			System.out.println(v);
+
+		System.out.println();
+		final ReportLog result = new ReportLog();
+		final int errorCode = GraphvizUtils.addDotStatus(result, false);
+		for (String s : result)
+			System.out.println(s);
+
+		Exit.exit(errorCode);
+	}
 
 	private static String hostname;
 
 	public static synchronized String getHostName() {
-		if (hostname == null) {
+		if (hostname == null)
 			hostname = getHostNameSlow();
-		}
+
 		return hostname;
 	}
 
@@ -164,11 +159,11 @@ public class OptionPrint {
 			return addr.getHostName();
 		} catch (Throwable e) {
 			final Map<String, String> env = System.getenv();
-			if (env.containsKey("COMPUTERNAME")) {
+			if (env.containsKey("COMPUTERNAME"))
 				return env.get("COMPUTERNAME");
-			} else if (env.containsKey("HOSTNAME")) {
+			else if (env.containsKey("HOSTNAME"))
 				return env.get("HOSTNAME");
-			}
+
 		}
 		return "Unknown Computer";
 	}
@@ -186,5 +181,6 @@ public class OptionPrint {
 	public static void printListKeywords() {
 		new LanguageDescriptor().print(System.out);
 	}
+	// ::done
 
 }

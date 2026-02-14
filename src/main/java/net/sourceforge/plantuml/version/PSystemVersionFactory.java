@@ -44,18 +44,17 @@ import net.sourceforge.plantuml.preproc.PreprocessingArtifact;
 import net.sourceforge.plantuml.utils.Log;
 
 public class PSystemVersionFactory extends PSystemSingleLineFactory {
-	// ::remove file when __TEAVM__
 
 	@Override
 	protected AbstractPSystem executeLine(UmlSource source, String line, PreprocessingArtifact preprocessing) {
 		try {
 			if (line.matches("(?i)^(authors?|about)\\s*$"))
-				return PSystemVersion.createShowAuthors2(source, preprocessing);
+				return PSystemVersion.createShowAuthors(source, preprocessing);
 
 			if (line.matches("(?i)^version\\s*$"))
-				return PSystemVersion.createShowVersion2(source, preprocessing);
+				return PSystemVersion.createShowVersion(source, preprocessing);
 
-			// ::comment when __CORE__
+			// ::comment when __CORE__ or __TEAVM__
 			if (line.matches("(?i)^stdlib\\s*$"))
 				return PSystemVersion.createStdLib(source, preprocessing);
 

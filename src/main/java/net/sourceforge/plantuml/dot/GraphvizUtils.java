@@ -123,9 +123,9 @@ public class GraphvizUtils {
 			try {
 				final String version = GraphvizRuntimeEnvironment.getInstance().dotVersion();
 				if (withRichText)
-					result.add("Dot version: \"\"" + version + "\"\"");
+					result.add("<b>GraphViz</b> \"\"" + version + "\"\"");
 				else
-					result.add("Dot version: " + version);
+					result.add("GraphViz: " + version);
 				final int v = GraphvizRuntimeEnvironment.getInstance().getDotVersion();
 				if (v == -1) {
 					result.add("Warning : cannot determine dot version");

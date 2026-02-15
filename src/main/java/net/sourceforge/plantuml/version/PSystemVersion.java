@@ -170,11 +170,11 @@ public class PSystemVersion extends PlainStringsDiagram {
 	public static PSystemVersion createShowVersion(UmlSource source, PreprocessingArtifact preprocessing) {
 		final ReportLog strings = new ReportLog();
 		strings.add("<b>PlantUML</b> \"\"" + Version.versionString() + "\"\"");
-		strings.add("<b>Build Version</b> \"\"" + Version.compileTimeString() + "\"\"");
 		strings.add("<b>Git Commit</b> \"\"" + CompilationInfo.COMMIT + "\"\"");
+		strings.add("<b>Build Time</b> \"\"" + Version.compileTimeString() + "\"\"");
 
 		// ::revert when __TEAVM__
-		strings.add("(" + License.getCurrent() + " source distribution)");
+		strings.add("<b>License</b> \"\"" + License.getCurrent() + "\"\"");
 		strings.checkOldVersionWarning();
 		if (SecurityUtils.getSecurityProfile() == SecurityProfile.UNSECURE) {
 			strings.add("Loaded from " + Version.getJarPath());

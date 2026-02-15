@@ -51,10 +51,7 @@ public class Ports {
 	private final Map<String, PortGeometry> ids = new HashMap<String, PortGeometry>();
 
 	public static String encodePortNameToId(String portName) {
-		// :: revert when __TEAVM__
 		return "p" + SignatureUtils.getMD5Hex(portName);
-		// throw new UnsupportedOperationException("TEAVM9898");
-		// ::done
 	}
 
 	@Override

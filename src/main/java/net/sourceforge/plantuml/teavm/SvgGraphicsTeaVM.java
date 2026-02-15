@@ -59,6 +59,7 @@ public class SvgGraphicsTeaVM {
 //	private String fillColor = "#000000";
 //	private String strokeColor = "#000000";
 //	private double strokeWidth = 1.0;
+//	private double[] strokeDasharray = null;
 //
 //	public SvgGraphicsTeaVM(int width, int height) {
 //		this.document = HTMLDocument.current();
@@ -97,6 +98,12 @@ public class SvgGraphicsTeaVM {
 //
 //	public void setStrokeWidth(double width) {
 //		this.strokeWidth = width;
+//		this.strokeDasharray = null;
+//	}
+//
+//	public void setStrokeWidth(double width, double[] dasharray) {
+//		this.strokeWidth = width;
+//		this.strokeDasharray = dasharray;
 //	}
 //
 //	public void drawRectangle(double x, double y, double width, double height) {
@@ -246,12 +253,13 @@ public class SvgGraphicsTeaVM {
 //	private void applyStrokeStyle(Element element) {
 //		element.setAttribute("stroke", strokeColor);
 //		element.setAttribute("stroke-width", format(strokeWidth));
+//		if (strokeDasharray != null && strokeDasharray.length >= 2)
+//			element.setAttribute("stroke-dasharray", format(strokeDasharray[0]) + "," + format(strokeDasharray[1]));
 //	}
 //
 //	private String format(double value) {
-//		if (value == (int) value) {
+//		if (value == (int) value)
 //			return String.valueOf((int) value);
-//		}
 //		return String.format("%.2f", value).replace(',', '.');
 //	}
 //

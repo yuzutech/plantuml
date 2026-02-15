@@ -87,12 +87,12 @@ public class UGraphicTeaVM extends AbstractUGraphic<SvgGraphicsTeaVM> implements
 		registerDriver(UText.class, new DriverTextTeaVM(this));
 		registerDriver(UPath.class, new DriverPathTeaVM(this));
 
+		registerDriver(UImage.class, new DriverImageTeaVM(this));
 		registerDriver(DotPath.class, new DriverDotPathTeaVM());
 
 		registerDriver(UCenteredCharacter.class, new DriverCenteredCharacterTeaVM());
 
 		// NOP drivers for shapes not yet implemented
-		ignoreShape(UImage.class);
 		ignoreShape(UImageSvg.class);
 		ignoreShape(UPixel.class);
 	}

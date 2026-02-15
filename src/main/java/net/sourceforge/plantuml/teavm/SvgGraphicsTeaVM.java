@@ -413,6 +413,36 @@ public class SvgGraphicsTeaVM {
 //		textElem.setTextContent(String.valueOf(c));
 //		mainGroup.appendChild(textElem);
 //	}
+//
+//	// ========================================================================
+//	// Image drawing
+//	// ========================================================================
+//
+//	/**
+//	 * Draws an image at the specified position using a data URL.
+//	 * The image is embedded directly in the SVG as a base64-encoded PNG.
+//	 * 
+//	 * @param dataUrl PNG data URL (data:image/png;base64,...)
+//	 * @param x       X position
+//	 * @param y       Y position
+//	 * @param width   Image width
+//	 * @param height  Image height
+//	 */
+//	public void drawImage(String dataUrl, double x, double y, int width, int height) {
+//		Element image = createSvgElement("image");
+//		image.setAttribute("x", format(x));
+//		image.setAttribute("y", format(y));
+//		image.setAttribute("width", String.valueOf(width));
+//		image.setAttribute("height", String.valueOf(height));
+//		// Use href for SVG 2.0 compatibility (xlink:href is deprecated)
+//		image.setAttribute("href", dataUrl);
+//		// Also set xlink:href for older browser compatibility
+//		setXlinkHref(image, dataUrl);
+//		mainGroup.appendChild(image);
+//	}
+//
+//	@JSBody(params = { "element", "href" }, script = "element.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href);")
+//	private static native void setXlinkHref(Element element, String href);
 	
 	// ::done
 

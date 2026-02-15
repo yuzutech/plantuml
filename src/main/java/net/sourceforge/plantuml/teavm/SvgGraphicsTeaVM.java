@@ -443,6 +443,64 @@ public class SvgGraphicsTeaVM {
 //
 //	@JSBody(params = { "element", "href" }, script = "element.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href);")
 //	private static native void setXlinkHref(Element element, String href);
+//
+//	// ========================================================================
+//	// SVG image embedding
+//	// ========================================================================
+//
+//	/**
+//	 * Embeds an SVG image at the specified position.
+//	 * The SVG content is parsed and inserted as a nested SVG element.
+//	 * 
+//	 * @param image UImageSvg containing the SVG data
+//	 * @param x     X position
+//	 * @param y     Y position
+//	 */
+//	public void drawSvgImage(net.sourceforge.plantuml.klimt.shape.UImageSvg image, double x, double y) {
+//		final double svgScale = image.getScale();
+//		String svg = image.getSvg(false);
+//
+//		// Handle scaling if needed
+//		if (svgScale != 1) {
+//			svg = wrapWithScaleTransform(svg, svgScale);
+//		}
+//
+//		// Create a group to position the embedded SVG
+//		Element wrapper = createSvgElement("g");
+//		wrapper.setAttribute("transform", "translate(" + format(x) + "," + format(y) + ")");
+//
+//		// Parse and insert the SVG content
+//		insertSvgContent(wrapper, svg);
+//
+//		mainGroup.appendChild(wrapper);
+//	}
+//
+//	/**
+//	 * Wraps SVG content with a scale transform.
+//	 */
+//	private String wrapWithScaleTransform(String svg, double scale) {
+//		String svg2 = svg.replace('\n', ' ').replace('\r', ' ');
+//		if (!svg2.contains("<g ") && !svg2.contains("<g>")) {
+//			svg = svg.replaceFirst("\\<svg\\>", "<svg><g>");
+//			svg = svg.replaceFirst("\\</svg\\>", "</g></svg>");
+//		}
+//		final String factor = format(scale);
+//		svg = svg.replaceFirst("\\<g\\b", "<g transform=\"scale(" + factor + "," + factor + ")\" ");
+//		return svg;
+//	}
+//
+//	/**
+//	 * Parses SVG string and inserts its content into the parent element.
+//	 */
+//	@JSBody(params = { "parent", "svgContent" }, script = 
+//		"var parser = new DOMParser();" +
+//		"var doc = parser.parseFromString(svgContent, 'image/svg+xml');" +
+//		"var svgElem = doc.documentElement;" +
+//		"if (svgElem && svgElem.tagName.toLowerCase() === 'svg') {" +
+//		"  var imported = document.importNode(svgElem, true);" +
+//		"  parent.appendChild(imported);" +
+//		"}")
+//	private static native void insertSvgContent(Element parent, String svgContent);
 	
 	// ::done
 

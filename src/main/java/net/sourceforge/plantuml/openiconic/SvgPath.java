@@ -189,7 +189,6 @@ public class SvgPath {
 		return result;
 	}
 
-	// ::comment when __TEAVM__
 	private UPath toUPath(XAffineTransform at) {
 		UPath result = UPath.none();
 		Movement previous = null;
@@ -246,8 +245,6 @@ public class SvgPath {
 		final UPath path = toUPath(at);
 		ug.draw(path);
 	}
-
-	// ::done
 
 	public void drawMe(UGraphic ug, double factor) {
 		final UPath path = toUPath(factor, factor);

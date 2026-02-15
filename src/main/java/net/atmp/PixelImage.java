@@ -35,10 +35,6 @@
  */
 package net.atmp;
 
-
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 import net.sourceforge.plantuml.klimt.AffineTransformType;
@@ -74,17 +70,9 @@ public class PixelImage implements MutableImage {
 		if (scale == 1)
 			return imageScale1;
 
-		// ::comment when __TEAVM__
-		if (cache == null) {
-			final int w = (int) Math.round(imageScale1.getWidth() * scale);
-			final int h = (int) Math.round(imageScale1.getHeight() * scale);
-			final BufferedImage after = new BufferedImage(w, h, imageScale1.getType());
-			final AffineTransform at = new AffineTransform();
-			at.scale(scale, scale);
-			final AffineTransformOp scaleOp = new AffineTransformOp(at, type.toLegacyInt());
-			this.cache = new PortableImage(scaleOp.filter(imageScale1.getBufferedImage(), after));
-		}
-		// ::done
+		if (cache == null)
+			this.cache = imageScale1.scale(scale, type.toLegacyInt());
+
 		return cache;
 	}
 

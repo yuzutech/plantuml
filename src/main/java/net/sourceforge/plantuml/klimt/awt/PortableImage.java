@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 // ::comment when __TEAVM__
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
@@ -109,6 +111,23 @@ public class PortableImage {
 		int w = image.getWidth();
 		int h = image.getHeight();
 		return image.getRGB(0, 0, w, h, null, 0, w);
+	}
+
+	/**
+	 * Scales this image by the given factor using the specified interpolation type.
+	 * 
+	 * @param scaleFactor the scale factor (e.g., 2.0 for double size)
+	 * @param interpolationType AffineTransformOp interpolation type
+	 * @return a new scaled PortableImage
+	 */
+	public PortableImage scale(double scaleFactor, int interpolationType) {
+		final int w = (int) Math.round(image.getWidth() * scaleFactor);
+		final int h = (int) Math.round(image.getHeight() * scaleFactor);
+		final BufferedImage scaled = new BufferedImage(w, h, image.getType());
+		final AffineTransform at = new AffineTransform();
+		at.scale(scaleFactor, scaleFactor);
+		final AffineTransformOp scaleOp = new AffineTransformOp(at, interpolationType);
+		return new PortableImage(scaleOp.filter(image, scaled));
 	}
 	// ::done
 
@@ -245,6 +264,95 @@ public class PortableImage {
 //
 //	@JSBody(params = { "canvas" }, script = "return canvas.toDataURL('image/png');")
 //	private static native String canvasToDataUrl(HTMLCanvasElement canvas);
+//
+//	/**
+//	 * Scales this image by the given factor using the specified interpolation type.
+//	 * 
+//	 * @param scaleFactor the scale factor (e.g., 2.0 for double size)
+//	 * @param interpolationType 1=nearest-neighbor, 2=bilinear
+//	 * @return a new scaled PortableImage
+//	 */
+//	public PortableImage scale(double scaleFactor, int interpolationType) {
+//		final int dstW = (int) Math.round(width * scaleFactor);
+//		final int dstH = (int) Math.round(height * scaleFactor);
+//
+//		if (dstW <= 0 || dstH <= 0)
+//			return new PortableImage(1, 1, imageType);
+//
+//		final int[] dstPixels = new int[dstW * dstH];
+//
+//		if (interpolationType == 2)
+//			scaleBilinear(pixels, width, height, dstPixels, dstW, dstH);
+//		else
+//			scaleNearestNeighbor(pixels, width, height, dstPixels, dstW, dstH);
+//
+//		return new PortableImage(dstW, dstH, imageType, dstPixels);
+//	}
+//
+//	/**
+//	 * Nearest-neighbor scaling - fast but can be blocky.
+//	 */
+//	private static void scaleNearestNeighbor(int[] src, int srcW, int srcH, int[] dst, int dstW, int dstH) {
+//		for (int y = 0; y < dstH; y++) {
+//			final int srcY = y * srcH / dstH;
+//			for (int x = 0; x < dstW; x++) {
+//				final int srcX = x * srcW / dstW;
+//				dst[y * dstW + x] = src[srcY * srcW + srcX];
+//			}
+//		}
+//	}
+//
+//	/**
+//	 * Bilinear interpolation scaling - smoother results.
+//	 */
+//	private static void scaleBilinear(int[] src, int srcW, int srcH, int[] dst, int dstW, int dstH) {
+//		final double xRatio = (double) (srcW - 1) / dstW;
+//		final double yRatio = (double) (srcH - 1) / dstH;
+//
+//		for (int y = 0; y < dstH; y++) {
+//			final double srcYf = y * yRatio;
+//			final int y0 = (int) srcYf;
+//			final int y1 = Math.min(y0 + 1, srcH - 1);
+//			final double yFrac = srcYf - y0;
+//
+//			for (int x = 0; x < dstW; x++) {
+//				final double srcXf = x * xRatio;
+//				final int x0 = (int) srcXf;
+//				final int x1 = Math.min(x0 + 1, srcW - 1);
+//				final double xFrac = srcXf - x0;
+//
+//				// Get 4 neighboring pixels
+//				final int c00 = src[y0 * srcW + x0];
+//				final int c10 = src[y0 * srcW + x1];
+//				final int c01 = src[y1 * srcW + x0];
+//				final int c11 = src[y1 * srcW + x1];
+//
+//				// Interpolate each channel
+//				final int a = interpolateChannel(c00, c10, c01, c11, xFrac, yFrac, 24);
+//				final int r = interpolateChannel(c00, c10, c01, c11, xFrac, yFrac, 16);
+//				final int g = interpolateChannel(c00, c10, c01, c11, xFrac, yFrac, 8);
+//				final int b = interpolateChannel(c00, c10, c01, c11, xFrac, yFrac, 0);
+//
+//				dst[y * dstW + x] = (a << 24) | (r << 16) | (g << 8) | b;
+//			}
+//		}
+//	}
+//
+//	/**
+//	 * Bilinear interpolation for a single color channel.
+//	 */
+//	private static int interpolateChannel(int c00, int c10, int c01, int c11, double xFrac, double yFrac, int shift) {
+//		final int v00 = (c00 >> shift) & 0xFF;
+//		final int v10 = (c10 >> shift) & 0xFF;
+//		final int v01 = (c01 >> shift) & 0xFF;
+//		final int v11 = (c11 >> shift) & 0xFF;
+//
+//		final double top = v00 + xFrac * (v10 - v00);
+//		final double bottom = v01 + xFrac * (v11 - v01);
+//		final double result = top + yFrac * (bottom - top);
+//
+//		return Math.min(255, Math.max(0, (int) Math.round(result)));
+//	}
 	// ::done
 
 }

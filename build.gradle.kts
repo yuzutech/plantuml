@@ -21,7 +21,7 @@ plugins {
 	java
 	`maven-publish`
 	signing
-    eclipse
+	eclipse
 	jacoco
 	id("com.gorylenko.gradle-git-properties") version "2.5.7"
 //	alias(libs.plugins.adarshr.test.logger)
@@ -704,6 +704,55 @@ tasks.named<JavaCompile>("compileTeavmJava") {
 	dependsOn(generateTeavmEmbeddedResources)
 }
 
+// Configuration for Google Closure Compiler (pure JVM, no Node.js required)
+val closureConfig by configurations.creating
+
+dependencies {
+	closureConfig("com.google.javascript:closure-compiler:v20250820")
+}
+
+// Task to minify JavaScript using Google Closure Compiler (pure JVM)
+tasks.register<JavaExec>("minifyJavaScript") {
+	description = "Minifies classes.js using Google Closure Compiler (pure JVM, no Node.js)"
+	group = "teavm"
+	
+	dependsOn("generateJavaScript")
+	
+	val inputFile = layout.buildDirectory.file("teavm/js/classes.js").get().asFile
+	val outputFile = layout.buildDirectory.file("teavm/js/classes.min.js").get().asFile
+	
+	inputs.file(inputFile)
+	outputs.file(outputFile)
+	
+	classpath = closureConfig
+	mainClass.set("com.google.javascript.jscomp.CommandLineRunner")
+	
+	args = listOf(
+		"--js", inputFile.absolutePath,
+		"--js_output_file", outputFile.absolutePath,
+		"--compilation_level", "SIMPLE",
+		"--language_out", "ECMASCRIPT_2015",
+		"--warning_level", "QUIET"
+	)
+	
+	doFirst {
+		println("Minifying JavaScript with Google Closure Compiler (pure JVM)...")
+		println("Input:  ${inputFile.absolutePath}")
+		println("Output: ${outputFile.absolutePath}")
+	}
+	
+	doLast {
+		val originalSize = inputFile.length() / 1024
+		val minifiedSize = outputFile.length() / 1024
+		val ratio = if (originalSize > 0) (100 - (minifiedSize * 100 / originalSize)) else 0
+		println("")
+		println("Google Closure Compiler minification complete!")
+		println("  Original:  $originalSize KB")
+		println("  Minified:  $minifiedSize KB")
+		println("  Reduction: $ratio%")
+	}
+}
+
 // Task to compile Java to JavaScript using TeaVM
 tasks.register<JavaExec>("generateJavaScript") {
 	description = "Compiles Java to JavaScript using TeaVM"
@@ -755,7 +804,7 @@ tasks.register("teavm") {
 	description = "Prepares TeaVM JS version with HTML file"
 	group = "teavm"
 	
-	dependsOn("generateJavaScript")
+	dependsOn("minifyJavaScript")
 	finalizedBy("teavmJavadoc")
 	
 	val outputDir = layout.buildDirectory.dir("teavm/js").get().asFile
@@ -822,7 +871,7 @@ tasks.register<Zip>("teavmZip") {
 	
 	// Use lazy evaluation to ensure files are read after teavm task completes
 	from(layout.buildDirectory.dir("teavm/js")) {
-		include("classes.js", "index.html", "viz-global.js")
+		include("classes.min.js", "index.html", "viz-global.js", "c4.js")
 	}
 	
 	destinationDirectory.set(layout.buildDirectory.dir("libs"))

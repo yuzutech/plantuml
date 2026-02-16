@@ -130,7 +130,7 @@ public final class BlockUmlBuilder implements DefinitionsContainer {
 						current.add(s);
 
 					WasmLog.log("...text loaded...");
-					final BlockUml uml = new BlockUml(pathSystem, current, defines.cloneMe(), null, this, charset);
+					final BlockUml uml = new BlockUml(this, pathSystem, current, defines.cloneMe(), null, charset);
 					usedFiles.addAll(uml.getIncluded());
 					blocks.add(uml);
 					current = null;

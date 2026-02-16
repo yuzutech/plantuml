@@ -232,7 +232,7 @@ public class EmbeddedDiagram extends AbstractTextBlock implements Line, Atom {
 
 	private Diagram getSystem() throws IOException, InterruptedException {
 		final Previous previous = skinParam == null ? Previous.createEmpty() : Previous.createFrom(skinParam.values());
-		final BlockUml blockUml = new BlockUml(PathSystem.fetch(), list, Defines.createEmpty(), previous, null, null);
+		final BlockUml blockUml = new BlockUml(null, PathSystem.fetch(), list, Defines.createEmpty(), previous, null);
 		return blockUml.getDiagram();
 
 	}

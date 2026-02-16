@@ -55,10 +55,10 @@ public class TimLoader {
 	private PreprocessingArtifact preprocessingArtifact;
 	private final PathSystem pathSystem;
 
-	public TimLoader(PathSystem pathSystem, /*ImportedFiles importedFiles,*/ Defines defines, Charset charset,
-			DefinitionsContainer definitionsContainer, StringLocated location) {
+	public TimLoader(PathSystem pathSystem, Defines defines, Charset charset, DefinitionsContainer definitionsContainer,
+			StringLocated location) {
 		this.pathSystem = pathSystem;
-		this.context = new TContext(pathSystem, /*importedFiles,*/ defines, charset, definitionsContainer);
+		this.context = new TContext(pathSystem, defines, charset, definitionsContainer);
 		try {
 			defines.copyTo(global, location);
 		} catch (EaterException e) {

@@ -88,7 +88,7 @@ public class BlockUml {
 
 	@Deprecated
 	BlockUml(String... strings) {
-		this(PathSystem.fetch(), convert(strings), Defines.createEmpty(), null, null, null);
+		this(null, PathSystem.fetch(), convert(strings), Defines.createEmpty(), null, null);
 	}
 
 	// ::comment when __CORE__ or __TEAVM__
@@ -136,8 +136,8 @@ public class BlockUml {
 //		this(strings, defines, skinMap, definitions, charsetOrDefault(definitions.getCharset()));
 //	}
 
-	public BlockUml(PathSystem pathSystem, List<StringLocated> strings, Defines defines, Previous previous,
-			DefinitionsContainer definitions, Charset charset) {
+	public BlockUml(DefinitionsContainer definitions, PathSystem pathSystem, List<StringLocated> strings, Defines defines,
+			Previous previous, Charset charset) {
 		this.pathSystem = pathSystem;
 		this.rawSource = ReadLineWithYamlHeader.removeYamlHeader(strings);
 		this.localDefines = defines;
@@ -147,8 +147,7 @@ public class BlockUml {
 			this.data = new ArrayList<>(this.rawSource);
 			this.preprocessingArtifact = new PreprocessingArtifact();
 		} else {
-			final TimLoader timLoader = new TimLoader(pathSystem, /*definitions.getImportedFiles(),*/ defines, charset,
-					definitions, this.rawSource.get(0));
+			final TimLoader timLoader = new TimLoader(pathSystem, defines, charset, definitions, this.rawSource.get(0));
 			this.included.addAll(timLoader.load(this.rawSource));
 			List<StringLocated> tmp = timLoader.getResultList();
 			tmp = Jaws.expands0(tmp);

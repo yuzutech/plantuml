@@ -192,7 +192,6 @@ public class TContext {
 	}
 
 	private void addStandardFunctions(Defines defines) {
-		// ::comment when __TEAVM__
 		functionsSet.addFunction(new AlwaysFalse());
 		functionsSet.addFunction(new AlwaysTrue());
 		functionsSet.addFunction(new Backslash());
@@ -212,12 +211,16 @@ public class TContext {
 		functionsSet.addFunction(new Filename(defines));
 		functionsSet.addFunction(new FilenameNoExtension(defines));
 		functionsSet.addFunction(new FunctionExists());
+		// ::comment when __TEAVM__
 		functionsSet.addFunction(new GetAllStdlib());
 		functionsSet.addFunction(new GetAllTheme());
+		// ::done
 		functionsSet.addFunction(new GetCurrentTheme());
 		functionsSet.addFunction(new GetJsonKey());
 		functionsSet.addFunction(new GetJsonType());
+		// ::comment when __TEAVM__
 		functionsSet.addFunction(new GetStdlib());
+		// ::done
 		functionsSet.addFunction(new GetVariableValue());
 		functionsSet.addFunction(new GetVersion());
 		functionsSet.addFunction(new Getenv());
@@ -234,7 +237,9 @@ public class TContext {
 		functionsSet.addFunction(new JsonSet());
 		functionsSet.addFunction(new LeftAlign());
 		functionsSet.addFunction(new Lighten());
+		// ::comment when __TEAVM__
 		functionsSet.addFunction(new LoadJson());
+		// ::done
 		// functionsSet.addFunction(new LoadJsonLegacy());
 		functionsSet.addFunction(new LogicalAnd());
 		functionsSet.addFunction(new LogicalNand());
@@ -268,7 +273,6 @@ public class TContext {
 		functionsSet.addFunction(new Upper());
 		functionsSet.addFunction(new VariableExists());
 		functionsSet.addFunction(new Xargs());
-		// ::done
 		// %standard_exists_function
 		// %str_replace
 		// !exit

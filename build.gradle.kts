@@ -764,6 +764,7 @@ tasks.register("teavm") {
 		copy {
 			from("src/main/resources/teavm/index.html")
 			from("src/main/resources/teavm/viz-global.js")
+			from("src/main/resources/teavm/c4.js")
 			into(outputDir)
 		}
 		

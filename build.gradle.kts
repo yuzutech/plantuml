@@ -405,9 +405,11 @@ signing {
 	}
 }
 
-// Site generation task - creates a comprehensive project site
-tasks.register("site") {
-	description = "Generates project site with documentation, reports, test results and demo."
+// Site assembly task - creates the site from pre-existing build outputs
+// Use 'site' for a full build (including TeaVM), or 'siteAssemble' if
+// TeaVM JS files are already present in build/teavm/js/ (e.g. from CI artifact)
+tasks.register("siteAssemble") {
+	description = "Assembles project site from pre-existing build outputs (no TeaVM build)."
 	group = "documentation"
 	
 	val siteDir = layout.buildDirectory.dir("site").get().asFile
@@ -418,9 +420,7 @@ tasks.register("site") {
 		tasks.test,
 		tasks.jacocoTestReport,
 		"jdepend",
-		"jdependHtml",
-		// Demo.
-		"teavm"
+		"jdependHtml"
 	)
 	
 	doLast {
@@ -520,6 +520,14 @@ tasks.register("site") {
 		println("  - JavaScript Demo (js-plantuml)")
 		println("========================================")
 	}
+}
+
+// Full site generation task (builds TeaVM + assembles site)
+tasks.register("site") {
+	description = "Generates complete project site including TeaVM JS build."
+	group = "documentation"
+	
+	dependsOn("teavm", "siteAssemble")
 }
 
 // ============================================
@@ -704,16 +712,16 @@ tasks.named<JavaCompile>("compileTeavmJava") {
 	dependsOn(generateTeavmEmbeddedResources)
 }
 
-// Configuration for Google Closure Compiler (pure JVM, no Node.js required)
+// Configuration for Google Closure Compiler
 val closureConfig by configurations.creating
 
 dependencies {
 	closureConfig("com.google.javascript:closure-compiler:v20250820")
 }
 
-// Task to minify JavaScript using Google Closure Compiler (pure JVM)
+// Task to minify JavaScript using Google Closure Compiler
 tasks.register<JavaExec>("minifyJavaScript") {
-	description = "Minifies classes.js using Google Closure Compiler (pure JVM, no Node.js)"
+	description = "Minifies classes.js using Google Closure Compiler"
 	group = "teavm"
 	
 	dependsOn("generateJavaScript")
@@ -739,7 +747,7 @@ tasks.register<JavaExec>("minifyJavaScript") {
 	)
 	
 	doFirst {
-		println("Minifying JavaScript with Google Closure Compiler (pure JVM)...")
+		println("Minifying JavaScript with Google Closure Compiler...")
 		println("Input:  ${inputFile.absolutePath}")
 		println("Output: ${outputFile.absolutePath}")
 	}
@@ -874,7 +882,7 @@ tasks.register<Zip>("teavmZip") {
 	
 	// Use lazy evaluation to ensure files are read after teavm task completes
 	from(layout.buildDirectory.dir("teavm/js")) {
-		include("classes.min.js", "index.html", "viz-global.js", "c4.js")
+		include("*.js", "*.html")
 	}
 	
 	destinationDirectory.set(layout.buildDirectory.dir("libs"))

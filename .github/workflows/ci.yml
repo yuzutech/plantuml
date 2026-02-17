@@ -265,7 +265,7 @@ jobs:
           retention-days: 30
 
   deploy_site_to_gh_page:
-    needs: [ build_artifacts, jdk8 ]
+    needs: [ workflow_config, build_artifacts, jdk8 ]
     if: needs.workflow_config.outputs.do_javadoc == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -281,8 +281,21 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: Build Site for GH Page
-        run: gradle site
+      - name: Download pre-built js-plantuml ZIP
+        uses: actions/download-artifact@v7
+        with:
+          name: js-plantuml-zip
+          path: build/libs
+
+      - name: Extract JS files into build/teavm/js
+        run: |
+          mkdir -p build/teavm/js
+          unzip -o build/libs/js-plantuml-*.zip -d build/teavm/js
+          echo "Contents of build/teavm/js:"
+          ls -la build/teavm/js/
+
+      - name: Build Site for GH Page (without TeaVM rebuild)
+        run: gradle siteAssemble
 
       - name: Deploy Site to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

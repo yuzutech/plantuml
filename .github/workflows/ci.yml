@@ -140,7 +140,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [ 17 ]
+        java_version: [ 21 ]
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -189,7 +189,7 @@ jobs:
       - name: Set up java
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
           cache: gradle
       - name: Setup Gradle
@@ -275,7 +275,7 @@ jobs:
       - name: Set up java
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
 
       - name: Setup Gradle
@@ -304,7 +304,7 @@ jobs:
       - name: Set up java
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
           cache: gradle
 

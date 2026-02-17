@@ -726,6 +726,7 @@ tasks.register<JavaExec>("minifyJavaScript") {
 	
 	classpath = closureConfig
 	mainClass.set("com.google.javascript.jscomp.CommandLineRunner")
+	jvmArgs("-Xmx4g", "-XX:+UseParallelGC")
 	
 	args = listOf(
 		"--js", inputFile.absolutePath,

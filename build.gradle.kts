@@ -733,7 +733,9 @@ tasks.register<JavaExec>("minifyJavaScript") {
 		"--js_output_file", outputFile.absolutePath,
 		"--compilation_level", "SIMPLE",
 		"--language_out", "ECMASCRIPT_2015",
-		"--warning_level", "QUIET"
+		"--warning_level", "QUIET",
+		"--rewrite_polyfills", "false",
+		"--assume_function_wrapper", "true"
 	)
 	
 	doFirst {

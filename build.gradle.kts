@@ -761,14 +761,13 @@ tasks.register("teavm") {
 	val outputDir = layout.buildDirectory.dir("teavm/js").get().asFile
 	
 	doLast {
-		// Copy the HTML template and Viz.js library (without erasing existing files)
+		// Copy the HTML template and all js files (without erasing existing files)
 		copy {
-			from("src/main/resources/teavm/index.html")
-			from("src/main/resources/teavm/viz-global.js")
-			from("src/main/resources/teavm/c4.js")
-			into(outputDir)
-		}
-		
+		    from("src/main/resources/teavm") {
+		        include("index.html", "*.js")
+		    }
+		    into(outputDir)
+		}		
 		println("")
 		println("======================")
 		println("TeaVM Ready!  --> ${outputDir.absolutePath}/index.html")
